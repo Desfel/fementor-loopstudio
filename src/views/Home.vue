@@ -1,9 +1,9 @@
 <template>
-  <div class="page-wrapper">
-    <section class="intro-section">
+  <div class="page-wrapper" :class="{'is-open': burgerOpen}">
+    <section class="intro-section parent-container">
       <div class="container">
         <div class="header">
-          <img src="@/assets/img/logo.svg" alt="Loopstudio" />
+          <img class="logo" src="@/assets/img/logo.svg" alt="Loopstudio" />
 
           <nav class="nav-links">
             <a href="#">About</a>
@@ -12,6 +12,21 @@
             <a href="#">Products</a>
             <a href="#">Support</a>
           </nav>
+
+          <span class="burger-menu" @click="openBurger">
+            <img v-if="!burgerOpen" src="@/assets/img/icon-hamburger.svg" alt="Open Burger" />
+            <img v-else src="@/assets/img/icon-close.svg" alt="Close Burger" />
+          </span>
+
+          <div class="mobile-menu" :class="{'is-open': burgerOpen}">
+            <nav class="mobile-links">
+              <a href="#">About</a>
+              <a href="#">Careers</a>
+              <a href="#">Events</a>
+              <a href="#">Products</a>
+              <a href="#">Support</a>
+            </nav>
+          </div>
         </div>
 
         <div class="content-wrapper">
@@ -20,9 +35,11 @@
       </div>
     </section>
 
-    <section class="about-section">
+    <section class="about-section parent-container">
       <div class="container">
         <div class="about-wrapper">
+          <div class="img-wrapper"></div>
+
           <div class="about-content">
             <p class="about-title">
               The leader in interactive VR
@@ -36,7 +53,7 @@
       </div>
     </section>
 
-    <section class="gallery-section">
+    <section class="gallery-section parent-container">
       <div class="container">
         <div class="gallery-header">
           <p class="gallery-title">
@@ -72,6 +89,8 @@
             <p>Make it fisheye</p>
           </div>
         </div>
+
+        <a href="#" class="site-btn mobile-btn">See all</a>
       </div>
     </section>
 
@@ -118,6 +137,11 @@
 import { mapState } from 'vuex'
 
 export default {
+  data() {
+    return {
+      burgerOpen: false
+    }
+  },
   head() {
     return {
       title: {
@@ -132,6 +156,11 @@ export default {
       ]
     }
   },
+  methods: {
+    openBurger() {
+      this.burgerOpen = !this.burgerOpen
+    }
+  },
   computed: mapState('app', ['appTitle'])
 }
 </script>
@@ -142,6 +171,11 @@ export default {
 .page-wrapper {
   display: flex;
   flex-direction: column;
+
+  &.is-open {
+    max-height: 100vh;
+    overflow: hidden;
+  }
 }
 
 .intro-section {
@@ -149,15 +183,27 @@ export default {
   background: url('../assets/img/desktop/image-hero.jpg') top center/cover no-repeat;
   min-height: 650px;
 
+  @media (max-width: 767px) {
+    background: url('../assets/img/mobile/image-hero.jpg') center/cover no-repeat;
+  }
+
   .header {
     display: flex;
     align-items: center;
     padding-top: 64px;
 
+    @media (max-width: 767px) {
+      padding-top: 40px;
+    }
+
     .nav-links {
       display: flex;
       align-items: center;
       margin-left: auto;
+
+      @media (max-width: 767px) {
+        display: none;
+      }
 
       a {
         position: relative;
@@ -191,14 +237,81 @@ export default {
         }
       }
     }
+
+    .logo {
+      position: relative;
+      z-index: 11;
+    }
+
+    .burger-menu {
+      position: relative;
+      margin-left: auto;
+      cursor: pointer;
+      z-index: 11;
+
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: $black;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity .3s ease-in-out;
+
+      @media (min-width: 768px) {
+        pointer-events: none;
+        opacity: 0;
+        z-index: -1;
+      }
+
+      &.is-open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .mobile-links {
+        padding-left: 24px;
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+
+        a {
+          font-weight: 300;
+          font-size: 24px;
+          line-height: 25px;
+          color: $white;
+
+          &:not(:last-child) {
+            margin-bottom: 24px;
+          }
+        }
+      }
+    }
   }
 
   .content-wrapper {
+    position: relative;
     font-family: $font2;
     margin-top: 123px;
     max-width: 650px;
     border: 1px solid $white;
     padding: 40px;
+
+    @media (max-width: 767px) {
+      max-width: 327px;
+      margin: 163px auto 0;
+      padding: 24px;
+    }
 
     h1 {
       font-weight: 300;
@@ -206,6 +319,11 @@ export default {
       line-height: 70px;
       color: $white;
       text-transform: uppercase;
+
+      @media (max-width: 767px) {
+        font-size: 40px;
+        line-height: 38px;
+      }
     }
   }
 }
@@ -215,16 +333,55 @@ export default {
   align-items: flex-end;
   margin-top: 160px;
 
+  @media (max-width: 767px) {
+    flex-direction: column;
+    margin-top: 96px;
+  }
+
   .about-wrapper {
-    padding-top: 183px;
+    display: flex;
+    align-items: flex-end;
+    position: relative;
+    height: 500px;
+
+    @media (max-width: 767px) {
+      height: auto;
+      flex-direction: column;
+    }
+  }
+
+
+  .img-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    max-width: 731px;
+    height: 500px;
     background: url('../assets/img/desktop/image-interactive.jpg') top left no-repeat;
+
+    @media (max-width: 767px) {
+      position: relative;
+      width: 100%;
+      height: 224px;
+      background: url('../assets/img/mobile/image-interactive.jpg') top/cover no-repeat;
+    }
   }
 
   .about-content {
+    position: relative;
+    z-index: 1;
     max-width: 541px;
     padding: 96px 0 0 96px;
     background: $white;
     margin-left: auto;
+
+    @media (max-width: 767px) {
+      max-width: 100%;
+      margin-left: 0;
+      padding: 48px 0 0;
+      text-align: center;
+    }
 
     .about-title {
       font-family: $font2;
@@ -232,6 +389,14 @@ export default {
       font-size: 48px;
       line-height: 48px;
       color: $black;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+
+      @media (max-width: 767px) {
+        font-size: 32px;
+        line-height: 32px;
+        margin-bottom: 16px;
+      }
     }
 
     .about-text {
@@ -247,10 +412,20 @@ export default {
 .gallery-section {
   margin-top: 184px;
 
+  @media (max-width: 767px) {
+    margin-top: 69px;
+    text-align: center;
+  }
+
   .gallery-header {
     display: flex;
     align-items: center;
     margin-bottom: 80px;
+
+    @media (max-width: 767px) {
+      margin-bottom: 48px;
+      justify-content: center;
+    }
 
     .gallery-title {
       font-family: $font2;
@@ -259,6 +434,12 @@ export default {
       line-height: 48px;
       text-transform: uppercase;
       color: $black;
+
+      @media (max-width: 767px) {
+        font-size: 32px;
+        line-height: 32px;
+        text-align: center;
+      }
     }
 
     .site-btn {
@@ -274,6 +455,10 @@ export default {
       transition: all .3s ease-in-out;
       color: $black;
 
+      @media (max-width: 767px) {
+        display: none;
+      }
+
       &:hover {
         color: $white;
         background: $black;
@@ -287,6 +472,12 @@ export default {
     flex-wrap: wrap;
     margin-bottom: -30px;
     padding-bottom: 184px;
+    text-align: left;
+
+    @media (max-width: 767px) {
+      flex-direction: column;
+      padding-bottom: 34px;
+    }
 
     .item {
       position: relative;
@@ -302,6 +493,20 @@ export default {
         &:not(:nth-child(4)):not(:nth-child(8)) {
           margin-right: 30px;
         }
+      }
+
+      @media (min-width: 768px) and (max-width: 1024px) {
+        width: calc((100% - 30px) / 2);
+
+        &:not(:nth-child(even)) {
+          margin-right: 30px;
+        }
+      }
+
+      @media (max-width: 767px) {
+        width: 100%;
+        height: 120px;
+        padding: 52px 20px 20px;
       }
 
       &:after {
@@ -320,7 +525,7 @@ export default {
 
       &:hover {
         &:after {
-          opacity: .75;
+          opacity: 0.75;
         }
 
         p {
@@ -330,34 +535,98 @@ export default {
 
       &.item-1 {
         background: url('../assets/img/desktop/image-deep-earth.jpg') center/cover no-repeat;
+
+        @media (max-width: 1024px) {
+          background-position: top center;
+        }
+
+        @media (max-width: 767px) {
+          background: url('../assets/img/mobile/image-deep-earth.jpg') center/cover no-repeat;
+        }
       }
 
       &.item-2 {
         background: url('../assets/img/desktop/image-night-arcade.jpg') center/cover no-repeat;
+
+        @media (max-width: 1024px) {
+          background-position: top center;
+        }
+
+        @media (max-width: 767px) {
+          background: url('../assets/img/desktop/image-night-arcade.jpg') center/cover no-repeat;
+        }
       }
 
       &.item-3 {
         background: url('../assets/img/desktop/image-soccer-team.jpg') center/cover no-repeat;
+
+        @media (max-width: 1024px) {
+          background-position: top center;
+        }
+
+        @media (max-width: 767px) {
+          background: url('../assets/img/mobile/image-soccer-team.jpg') center/cover no-repeat;
+        }
       }
 
       &.item-4 {
         background: url('../assets/img/desktop/image-grid.jpg') center/cover no-repeat;
+
+        @media (max-width: 1024px) {
+          background-position: top center;
+        }
+
+        @media (max-width: 767px) {
+          background: url('../assets/img/mobile/image-grid.jpg') center/cover no-repeat;
+        }
       }
 
       &.item-5 {
         background: url('../assets/img/desktop/image-from-above.jpg') center/cover no-repeat;
+
+        @media (max-width: 1024px) {
+          background-position: top center;
+        }
+
+        @media (max-width: 767px) {
+          background: url('../assets/img/mobile/image-from-above.jpg') center/cover no-repeat;
+        }
       }
 
       &.item-6 {
         background: url('../assets/img/desktop/image-pocket-borealis.jpg') center/cover no-repeat;
+
+        @media (max-width: 1024px) {
+          background-position: top center;
+        }
+
+        @media (max-width: 767px) {
+          background: url('../assets/img/mobile/image-pocket-borealis.jpg') center/cover no-repeat
+        }
       }
 
       &.item-7 {
         background: url('../assets/img/desktop/image-curiosity.jpg') center/cover no-repeat;
+
+        @media (max-width: 1024px) {
+          background-position: top center;
+        }
+
+        @media (max-width: 767px) {
+          background: url('../assets/img/mobile/image-curiosity.jpg') center/cover no-repeat;
+        }
       }
 
       &.item-8 {
         background: url('../assets/img/desktop/image-fisheye.jpg') center/cover no-repeat;
+
+        @media (max-width: 1024px) {
+          background-position: top center;
+        }
+
+        @media (max-width: 767px) {
+          background: url('../assets/img/mobile/image-fisheye.jpg') center/cover no-repeat;
+        }
       }
 
       p {
@@ -373,7 +642,38 @@ export default {
         text-transform: uppercase;
         color: $white;
         z-index: 2;
+
+        @media (max-width: 767px) {
+          max-width: 120px;
+          font-size: 24px;
+          line-height: 24px;
+        }
       }
+    }
+  }
+
+  .mobile-btn {
+    display: inline-block;
+    font-family: $font1;
+    padding: 13px 43px;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 14px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    border: 1px solid $black;
+    transition: all .3s ease-in-out;
+    color: $black;
+    margin: auto auto 96px;
+    text-align: center;
+
+    @media (min-width: 768px) {
+      display: none;
+    }
+
+    &:hover {
+      color: $white;
+      background: $black;
     }
   }
 }
@@ -382,18 +682,37 @@ footer {
   background: $black;
   padding: 44px 40px 33px;
 
+  @media (max-width: 767px) {
+    padding: 56px 52px;
+  }
+
   .footer-wrapper {
     display: flex;
     align-items: stretch;
 
+    @media (max-width: 767px) {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
     .left-footer {
       img {
         margin-bottom: 14px;
+
+        @media (max-width: 767px) {
+          margin-bottom: 32px;
+        }
       }
 
       .nav-links {
         display: flex;
         align-items: center;
+
+        @media (max-width: 767px) {
+          flex-direction: column;
+        }
 
         a {
           position: relative;
@@ -405,6 +724,11 @@ footer {
 
           &:not(:last-child) {
             margin-right: 32px;
+
+            @media (max-width: 767px) {
+              margin-right: 0;
+              margin-bottom: 16px;
+            }
           }
 
           &:hover {
@@ -434,6 +758,12 @@ footer {
       flex-direction: column;
       text-align: right;
       margin-left: auto;
+
+      @media (max-width: 767px) {
+        margin-left: 0;
+        margin-top: 48px;
+        text-align: center;
+      }
 
       .social-wrapper {
         margin-bottom: 14px;

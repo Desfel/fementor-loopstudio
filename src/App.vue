@@ -94,6 +94,14 @@ body {
         max-width: 1110px;
         margin: auto;
       }
+
+      .parent-container {
+        padding: 0 40px;
+
+        @media (max-width: 767px) {
+          padding: 0 24px;
+        }
+      }
     }
   }
 }
